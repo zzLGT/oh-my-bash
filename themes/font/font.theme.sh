@@ -43,9 +43,12 @@ function _omb_theme_PROMPT_COMMAND() {
 
     local hostname="${_omb_prompt_bold_cyan}\u@\h"
     local python_venv; _omb_prompt_get_python_venv
-    python_venv=$_omb_prompt_white$python_venv
+    python_venv=${python_venv// /};
+    python_venv=${python_venv//\(/};
+    python_venv=${python_venv//\)/};
+    python_venv="${_omb_prompt_gray}(py|${python_venv})"
     local spack_env; _omb_prompt_get_spack_env
-    spack_env=$_omb_prompt_white$spack_env
+    spack_env=${_omb_prompt_gray}${spack_env}
 
     # Set return status color
     if [[ ${RC} == 0 ]]; then
@@ -57,7 +60,7 @@ function _omb_theme_PROMPT_COMMAND() {
     # Append new history lines to history file
     history -a
 
-    PS1="$(clock_prompt) $python_venv${hostname} ${_omb_prompt_bold_yellow}\w ${_omb_prompt_bold_purple}$(scm_prompt_char_info)\n${ret_status}\u> ${_omb_prompt_normal}"
+    PS1="$(clock_prompt) ${spack_env}${python_venv} ${hostname} ${_omb_prompt_bold_yellow}\w ${_omb_prompt_bold_purple}$(scm_prompt_char_info)\n${ret_status}\u> ${_omb_prompt_normal}"
 }
 
 _omb_util_add_prompt_command _omb_theme_PROMPT_COMMAND
